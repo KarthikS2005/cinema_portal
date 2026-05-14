@@ -14,7 +14,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      provider: 'MongoDB',
+      provider: 'SQLite',
       totalCount,
       tickets
     });
@@ -24,7 +24,7 @@ export async function GET() {
       { 
         success: false, 
         error: error.message,
-        message: "Failed to connect to MongoDB. Ensure your DATABASE_URL is set correctly in .env" 
+        message: "Failed to connect to SQLite." 
       },
       { status: 500 }
     );

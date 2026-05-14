@@ -47,7 +47,7 @@ export default function SettingsPage() {
       <div className={styles.dbInfoCard}>
         <div className={styles.infoItem}>
           <span className={styles.infoLabel}>Database Engine</span>
-          <span className={styles.infoValue}>MongoDB (Prisma)</span>
+          <span className={styles.infoValue}>SQLite (Prisma)</span>
         </div>
         <div className={styles.infoItem}>
           <span className={styles.infoLabel}>Total Records</span>
@@ -85,11 +85,11 @@ export default function SettingsPage() {
           {dbStatus && (
             <>
               <div className={`${styles.output} ${styles.success}`}>
-                Successfully connected to MongoDB.
+                Successfully connected to SQLite.
                 {"\n"}Found {dbStatus.totalCount} records in collection 'Ticket'.
               </div>
               
-              <div className={styles.command}>$ db.tickets.find().limit(200).pretty()</div>
+              <div className={styles.command}>$ sqlite3 dev.db "SELECT * FROM Ticket LIMIT 200;"</div>
               <div className={styles.output}>
                 {JSON.stringify(dbStatus.tickets, null, 2)}
               </div>
