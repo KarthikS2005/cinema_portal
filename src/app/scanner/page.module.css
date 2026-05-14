@@ -1,0 +1,209 @@
+.scannerLayout {
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.header {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+}
+
+.backBtn {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-xl);
+  font-size: 0.9rem;
+  backdrop-filter: blur(4px);
+  text-decoration: none;
+}
+
+/* Camera Viewfinder */
+.viewfinder {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cameraBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5; /* Mocking camera feed */
+}
+
+.targetBorder {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+}
+
+.targetCorner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-color: var(--accent-cyan);
+  border-style: solid;
+  border-width: 0;
+}
+
+.topLeft { top: -2px; left: -2px; border-top-width: 4px; border-left-width: 4px; }
+.topRight { top: -2px; right: -2px; border-top-width: 4px; border-right-width: 4px; }
+.bottomLeft { bottom: -2px; left: -2px; border-bottom-width: 4px; border-left-width: 4px; }
+.bottomRight { bottom: -2px; right: -2px; border-bottom-width: 4px; border-right-width: 4px; }
+
+.scanLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 10px var(--accent-cyan);
+  animation: scanMobile 3s infinite linear;
+}
+
+@keyframes scanMobile {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.instruction {
+  position: absolute;
+  bottom: 2rem;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+.instructionText {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-xl);
+  font-size: 0.9rem;
+  backdrop-filter: blur(4px);
+}
+
+/* Validation Overlay */
+.validationOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.overlayValid {
+  background-color: var(--accent-emerald);
+}
+
+.overlayInvalid {
+  background-color: #ff5500; /* Warning orange */
+}
+
+.validationIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  font-size: 3rem;
+}
+
+.validationTitle {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+}
+
+.validationDetails {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 300px;
+}
+
+.seatNumbers {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  margin-bottom: 0.5rem;
+}
+
+.auditorium {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.timestamp {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-top: 0.5rem;
+  font-family: monospace;
+}
+
+.actionBtn {
+  margin-top: 3rem;
+  background: #fff;
+  color: #000;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-xl);
+  font-weight: 700;
+  font-size: 1.1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+/* Controls to mock scanning */
+.mockControls {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 50;
+}
+
+.mockBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+}

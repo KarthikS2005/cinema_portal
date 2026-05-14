@@ -1,0 +1,195 @@
+.ticketContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--bg-primary);
+  background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.1), transparent 50%);
+}
+
+.successHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--accent-emerald);
+}
+
+.ticketCard {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  color: #1a1a24;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.ticketTop {
+  padding: 2rem;
+  background: #ffffff;
+}
+
+.movieTitle {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.ticketDetails {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.detailGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detailLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6c757d;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.detailValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a24;
+}
+
+/* Micro-perforated coupon edge */
+.perforation {
+  position: relative;
+  height: 20px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.perforationLine {
+  width: 100%;
+  height: 2px;
+  border-top: 3px dashed #e9ecef;
+}
+
+.notchLeft, .notchRight {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: var(--bg-primary);
+  border-radius: 50%;
+  top: -5px;
+}
+
+.notchLeft {
+  left: -15px;
+  box-shadow: inset -3px 0 5px rgba(0,0,0,0.1);
+}
+
+.notchRight {
+  right: -15px;
+  box-shadow: inset 3px 0 5px rgba(0,0,0,0.1);
+}
+
+.ticketBottom {
+  padding: 2rem;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qrContainer {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  background: #fff;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+}
+
+.qrCode {
+  width: 100%;
+  height: 100%;
+  /* Using CSS to simulate a dense QR code */
+  background: repeating-linear-gradient(
+    45deg,
+    #000,
+    #000 10px,
+    #fff 10px,
+    #fff 20px
+  );
+  /* A mock image will be used instead in TSX */
+}
+
+.scanningIndicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--accent-emerald);
+  box-shadow: 0 0 10px var(--accent-emerald);
+  animation: scan 2s infinite ease-in-out;
+}
+
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.walletActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.walletBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btnApple {
+  background: #000;
+  color: #fff;
+}
+.btnApple:hover { background: #333; }
+
+.btnGoogle {
+  background: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+}
+.btnGoogle:hover { background: #f8f9fa; }
+
+.btnDownload {
+  background: transparent;
+  color: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+}
+.btnDownload:hover { background: rgba(0, 240, 255, 0.1); }

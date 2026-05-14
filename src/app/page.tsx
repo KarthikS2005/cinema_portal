@@ -1,65 +1,104 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import styles from './page.module.css';
+
+const MOCK_MOVIES = [
+  { id: 1, title: 'DUNE: PART TWO', rating: '98%', format: 'IMAX 70MM', genre: 'Sci-Fi / Adventure', summary: 'Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.', img: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop' },
+  { id: 2, title: 'OPPENHEIMER', rating: '93%', format: 'DOLBY CINEMA', genre: 'Historical Drama', summary: 'The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.', img: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=800&auto=format&fit=crop' },
+  { id: 3, title: 'INTERSTELLAR', rating: '96%', format: 'IMAX 3D', genre: 'Sci-Fi / Drama', summary: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.', img: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=800&auto=format&fit=crop' },
+  { id: 4, title: 'BLADE RUNNER 2049', rating: '89%', format: '4DX', genre: 'Sci-Fi / Action', summary: 'Young Blade Runner K\'s discovery of a long-buried secret leads him to track down former Blade Runner Rick Deckard.', img: 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=800&auto=format&fit=crop' },
+  { id: 5, title: 'THE BATMAN', rating: '85%', format: 'DOLBY CINEMA', genre: 'Action / Crime', summary: 'When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city\'s hidden corruption.', img: 'https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?q=80&w=800&auto=format&fit=crop' }
+];
+
+export default function CustomerPortal() {
+  const [location, setLocation] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Simulate geolocation detection
+    setTimeout(() => {
+      setLocation("Metropolis Downtown Multiplex");
+    }, 1500);
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className={styles.hero}>
+      {/* Geolocation Banner */}
+      <div className={`${styles.geolocationBanner} glass-panel animate-slide-up`}>
+        <span className={styles.bannerIcon}>📍</span>
+        <div className={styles.bannerText}>
+          {location ? (
+             <span>Your closest theater: <strong>{location}</strong></span>
+          ) : (
+             <span>Detecting your nearest multiplex branch...</span>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        {!location && (
+          <div className={styles.bannerActions}>
+            <button className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>Allow</button>
+            <button className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>Decline</button>
+          </div>
+        )}
+      </div>
+
+      {/* Hero Content */}
+      <div style={{ textAlign: 'center', marginTop: '10vh' }} className="animate-fade-in">
+        <h1 style={{ fontSize: '4rem', marginBottom: '1rem', textShadow: 'var(--shadow-neon)' }}>CINEMATIC IMMERSION</h1>
+        <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
+          Discover the ultimate viewing experience. Next-generation formats, premium seating, and distraction-free booking.
+        </p>
+      </div>
+
+      {/* Search Interface */}
+      <div className={`${styles.searchInterface} animate-slide-up`} style={{ animationDelay: '0.2s' }}>
+        <input type="text" placeholder="Search movies, genres, or directors..." className={styles.searchInput} />
+        <select className={styles.selectInput}>
+          <option value="">Any Format</option>
+          <option value="imax">IMAX 70MM</option>
+          <option value="dolby">Dolby Cinema</option>
+          <option value="4dx">4DX Interactive</option>
+        </select>
+        <select className={styles.selectInput}>
+          <option value="">Any Location</option>
+          <option value="metropolis">Metropolis Downtown</option>
+          <option value="gotham">Gotham Central</option>
+        </select>
+      </div>
+
+      {/* Carousel Section */}
+      <div className={`${styles.carouselSection} animate-fade-in`} style={{ animationDelay: '0.4s' }}>
+        <div className={styles.carouselContainer}>
+          {MOCK_MOVIES.map((movie) => (
+            <div key={movie.id} className={styles.movieCard}>
+              <img src={movie.img} alt={movie.title} className={styles.posterImage} />
+              <div className={styles.cardOverlay}>
+                <h3 className={styles.movieTitle}>{movie.title}</h3>
+                <div className={styles.movieMeta}>
+                  <span className={`${styles.badge} ${styles.badgeRating}`}>{movie.rating}</span>
+                  <span className={`${styles.badge} ${styles.badgeImax}`}>{movie.format}</span>
+                </div>
+                <p className={styles.microSummary}>{movie.summary}</p>
+                <div className={styles.cardActions}>
+                  <Link href={`/checkout?movie=${movie.id}`} className="btn btn-primary" style={{ width: '100%', marginBottom: '0.5rem' }}>
+                    Book Tickets
+                  </Link>
+                  <button className="btn btn-secondary" style={{ width: '100%' }}>
+                    Watch Trailer
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </main>
-    </div>
+      </div>
+      
+      {/* Navigation to other parts of the demo */}
+      <div style={{ position: 'absolute', bottom: '2rem', display: 'flex', gap: '1rem' }}>
+         <Link href="/backoffice" className="btn btn-secondary">Admin Backoffice</Link>
+         <Link href="/hr" className="btn btn-secondary">HR Dashboard</Link>
+         <Link href="/scanner" className="btn btn-secondary">Staff Scanner</Link>
+      </div>
+    </main>
   );
 }
