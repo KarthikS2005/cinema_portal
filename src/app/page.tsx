@@ -93,12 +93,7 @@ export default function CustomerPortal() {
         </div>
       </div>
       
-      {/* Navigation to other parts of the demo */}
-      <div style={{ position: 'absolute', bottom: '2rem', display: 'flex', gap: '1rem' }}>
-         <Link href="/backoffice" className="btn btn-secondary">Admin Backoffice</Link>
-         <Link href="/hr" className="btn btn-secondary">HR Dashboard</Link>
-         <Link href="/scanner" className="btn btn-secondary">Staff Scanner</Link>
-      </div>
+      {/* Navigation handled by Global Navbar */}
     </main>
   );
 }

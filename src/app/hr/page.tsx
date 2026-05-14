@@ -30,7 +30,6 @@ export default function HRDashboard() {
           <h1 style={{ fontFamily: 'var(--font-display)' }}>HR Command</h1>
         </div>
         <div className={styles.navLinks}>
-          <Link href="/backoffice" className="btn btn-secondary">Back to Command Center</Link>
           <button className="btn btn-primary">Add Employee</button>
         </div>
       </header>

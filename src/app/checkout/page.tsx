@@ -25,18 +25,18 @@ const SEATS: Seat[] = ROWS.flatMap((row, rIndex) => {
     const isBooked = Math.random() < 0.2; // 20% chance booked
     
     let seatClass: SeatClass = 'standard';
-    let price = 14.50;
+    let price = 250;
     
     // Premium seats in middle rows
     if (rIndex >= 3 && rIndex <= 5 && cIndex >= 3 && cIndex <= 10) {
       seatClass = 'premium';
-      price = 19.50;
+      price = 450;
     }
     
     // Luxury back row
     if (rIndex === ROWS.length - 1) {
       seatClass = 'luxury';
-      price = 28.00;
+      price = 800;
     }
 
     return {
@@ -79,7 +79,7 @@ export default function CheckoutPage() {
   };
 
   const subtotal = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
-  const fees = selectedSeats.length * 2.50;
+  const fees = selectedSeats.length * 40;
   const total = subtotal + fees;
 
   return (
@@ -105,7 +105,7 @@ export default function CheckoutPage() {
                     key={seat.id} 
                     className={`${styles.seat} ${seatClass} ${seat.isBooked ? styles.seatBooked : ''} ${isSelected ? styles.seatSelected : ''}`}
                     onClick={() => toggleSeat(seat)}
-                    title={`${seat.id} - $${seat.price.toFixed(2)}`}
+                    title={`${seat.id} - ₹${seat.price.toFixed(2)}`}
                   >
                     <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
                       <rect className={styles.seatRect} x="4" y="4" width="32" height="32" rx="6" />
@@ -151,7 +151,7 @@ export default function CheckoutPage() {
                     {seat.class} Tier
                   </div>
                 </div>
-                <div className={styles.ticketPrice}>${seat.price.toFixed(2)}</div>
+                <div className={styles.ticketPrice}>₹{seat.price.toFixed(2)}</div>
               </div>
             ))
           )}
@@ -160,15 +160,15 @@ export default function CheckoutPage() {
         <div className={styles.priceBreakdown}>
           <div className={styles.priceRow}>
             <span>Tickets ({selectedSeats.length})</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>₹{subtotal.toFixed(2)}</span>
           </div>
           <div className={styles.priceRow}>
             <span>Processing Fees</span>
-            <span>${fees.toFixed(2)}</span>
+            <span>₹{fees.toFixed(2)}</span>
           </div>
           <div className={styles.priceTotal}>
             <span>Total</span>
-            <span style={{ color: 'var(--accent-amber)' }}>${total.toFixed(2)}</span>
+            <span style={{ color: 'var(--accent-amber)' }}>₹{total.toFixed(2)}</span>
           </div>
 
           <button 

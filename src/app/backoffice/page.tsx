@@ -30,12 +30,6 @@ export default function BackofficeDashboard() {
           <div className={`${styles.navItem} ${activeTab === 'programming' ? styles.active : ''}`}>
             🎬 Programming
           </div>
-          <Link href="/hr" className={styles.navItem}>
-            👥 HR & Staff
-          </Link>
-          <Link href="/" className={styles.navItem}>
-            🌐 Public Portal
-          </Link>
         </nav>
 
         <div className={styles.userProfile}>

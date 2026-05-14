@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Ticket {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  movieId   String
+  movieName String
+  seatId    String
+  seatClass String
+  price     Float
+  status    String   @default("booked") // "booked", "scanned", "cancelled"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

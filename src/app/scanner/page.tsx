@@ -22,7 +22,7 @@ export default function MobileScanner() {
       {scanState === 'scanning' && (
         <>
           <div className={styles.header}>
-            <Link href="/" className={styles.backBtn}>Exit Scanner</Link>
+            <div></div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-emerald)', boxShadow: '0 0 5px var(--accent-emerald)' }}></div>
               <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Active</span>

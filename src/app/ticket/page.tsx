@@ -74,9 +74,7 @@ export default function TicketPage() {
           </div>
         </div>
 
-        <Link href="/" className="btn btn-secondary" style={{ marginTop: '2rem' }}>
-          Back to Home
-        </Link>
+        {/* Navigation handled by Global Navbar */}
       </div>
     </div>
   );

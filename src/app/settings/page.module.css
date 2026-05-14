@@ -1,0 +1,112 @@
+.settingsContainer {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dbInfoCard {
+  background: rgba(20, 20, 25, 0.7);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.infoLabel {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.infoValue {
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: var(--accent-cyan);
+}
+
+.consoleContainer {
+  background: #0f0f13;
+  border-radius: 8px;
+  border: 1px solid #333;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.consoleHeader {
+  background: #1a1a24;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #333;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.consoleDots {
+  display: flex;
+  gap: 6px;
+  margin-right: 1rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dotRed { background: #ff5f56; }
+.dotYellow { background: #ffbd2e; }
+.dotGreen { background: #27c93f; }
+
+.consoleBody {
+  padding: 1.5rem;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #a9b7c6;
+  overflow-y: auto;
+  max-height: 60vh;
+  line-height: 1.5;
+}
+
+.command {
+  color: #e8bf6a;
+  margin-bottom: 0.5rem;
+}
+
+.output {
+  color: #a9b7c6;
+  margin-bottom: 1.5rem;
+  white-space: pre-wrap;
+}
+
+.error {
+  color: #ff5f56;
+}
+
+.success {
+  color: #6a8759;
+}
