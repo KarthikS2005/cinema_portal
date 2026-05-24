@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
 
 const MOCK_EMPLOYEES = [
-  { id: 1, name: 'Sarah Jenkins', role: 'General Manager', location: 'Metropolis Downtown', wage: '$8,500/mo', type: 'monthly' },
-  { id: 2, name: 'David Chen', role: 'Projectionist', location: 'Metropolis Downtown', wage: '$28.50/hr', type: 'hourly' },
-  { id: 3, name: 'Maria Rodriguez', role: 'Box Office Lead', location: 'Gotham Central', wage: '$22.00/hr', type: 'hourly' },
-  { id: 4, name: 'James Wilson', role: 'Usher', location: 'Metropolis Downtown', wage: '$18.00/hr', type: 'hourly' },
-  { id: 5, name: 'Emily Taylor', role: 'Concessions', location: 'Star City Plaza', wage: '$17.50/hr', type: 'hourly' }
+  { id: 1, name: 'Sarah Jenkins', role: 'General Manager', location: 'Metropolis Downtown', wage: '₹8,500/mo', type: 'monthly' },
+  { id: 2, name: 'David Chen', role: 'Projectionist', location: 'Metropolis Downtown', wage: '₹28.50/hr', type: 'hourly' },
+  { id: 3, name: 'Maria Rodriguez', role: 'Box Office Lead', location: 'Gotham Central', wage: '₹22.00/hr', type: 'hourly' },
+  { id: 4, name: 'James Wilson', role: 'Usher', location: 'Metropolis Downtown', wage: '₹18.00/hr', type: 'hourly' },
+  { id: 5, name: 'Emily Taylor', role: 'Concessions', location: 'Star City Plaza', wage: '₹17.50/hr', type: 'hourly' }
 ];
 
 const MOCK_SHIFTS = [
@@ -20,7 +20,49 @@ const MOCK_SHIFTS = [
 ];
 
 export default function HRDashboard() {
+  const [employees, setEmployees] = useState(MOCK_EMPLOYEES);
   const [activeEmp, setActiveEmp] = useState(MOCK_EMPLOYEES[1]);
+  const [paymentMethod, setPaymentMethod] = useState("Bank Transfer");
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Fetch employees from DB
+  useEffect(() => {
+    fetch('/api/employees')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setEmployees(data);
+          setActiveEmp(data[0]);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  const handleDeleteEmployee = async (id: any) => {
+    try {
+      await fetch(`/api/employees/${id}`, { method: 'DELETE' });
+      setEmployees(employees.filter(e => e.id !== id));
+      if (activeEmp.id === id) setActiveEmp(employees[0]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAuthorizePayment = async () => {
+    setIsProcessing(true);
+    try {
+      await fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: 836.80, method: paymentMethod, purpose: 'Salary', referenceId: activeEmp.id.toString() })
+      });
+      alert('Payment Authorized Successfully!');
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className={styles.hrLayout}>
@@ -42,20 +84,26 @@ export default function HRDashboard() {
             <input type="text" placeholder="Search by name or role..." className={styles.searchBar} />
           </div>
           <div>
-            {MOCK_EMPLOYEES.map(emp => (
+            {employees.map((emp: any) => (
               <div 
                 key={emp.id} 
-                className={`${styles.employeeCard} ${activeEmp.id === emp.id ? styles.active : ''}`}
+                className={`${styles.employeeCard} ${activeEmp?.id === emp.id ? styles.active : ''}`}
                 onClick={() => setActiveEmp(emp)}
               >
                 <div className={styles.avatar}>
-                  {emp.name.split(' ').map(n => n[0]).join('')}
+                  {emp.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
                 </div>
-                <div>
+                <div style={{ flex: 1 }}>
                   <div className={styles.empName}>{emp.name}</div>
-                  <div className={styles.empRole}>{emp.role} • {emp.wage}</div>
+                  <div className={styles.empRole}>{emp.role} • {typeof emp.wage === 'number' ? `₹${emp.wage}/hr` : emp.wage}</div>
                   <div className={styles.empLocation}>{emp.location}</div>
                 </div>
+                <button 
+                  style={{ background: 'transparent', border: 'none', color: 'var(--accent-crimson)', cursor: 'pointer' }}
+                  onClick={(e) => { e.stopPropagation(); handleDeleteEmployee(emp.id); }}
+                >
+                  ✖
+                </button>
               </div>
             ))}
           </div>
@@ -94,39 +142,55 @@ export default function HRDashboard() {
               <div className={styles.payrollForm}>
                 <div className={styles.wageRow}>
                   <div className={styles.wageLabel}>Base Wage (33.5 hrs)</div>
-                  <input type="text" className={styles.wageInput} defaultValue="$954.75" />
+                  <input type="text" className={styles.wageInput} defaultValue="₹954.75" />
                 </div>
                 <div className={styles.wageRow}>
                   <div className={styles.wageLabel}>Overtime (1.0 hrs @ 1.5x)</div>
-                  <input type="text" className={styles.wageInput} defaultValue="$42.75" />
+                  <input type="text" className={styles.wageInput} defaultValue="₹42.75" />
                 </div>
                 <div className={styles.wageRow} style={{ borderColor: 'transparent', paddingBottom: '0.5rem' }}>
                   <div className={styles.wageLabel}>Gross Pay</div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}>$997.50</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}>₹997.50</div>
                 </div>
                 
                 <div style={{ height: '1px', background: 'var(--border-light)', margin: '0.5rem 0' }}></div>
                 
                 <div className={styles.wageRow}>
                   <div className={styles.wageLabel}>Tax Deductions (Federal)</div>
-                  <input type="text" className={styles.wageInput} defaultValue="-$112.50" style={{ color: 'var(--accent-crimson)' }} />
+                  <input type="text" className={styles.wageInput} defaultValue="-₹112.50" style={{ color: 'var(--accent-crimson)' }} />
                 </div>
                 <div className={styles.wageRow}>
                   <div className={styles.wageLabel}>Tax Deductions (State)</div>
-                  <input type="text" className={styles.wageInput} defaultValue="-$48.20" style={{ color: 'var(--accent-crimson)' }} />
+                  <input type="text" className={styles.wageInput} defaultValue="-₹48.20" style={{ color: 'var(--accent-crimson)' }} />
                 </div>
 
                 <div className={styles.totalRow}>
                   <span>Net Pay Auth</span>
-                  <span>$836.80</span>
+                  <span>₹836.80</span>
                 </div>
 
                 <div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '1rem' }}>Payment Authorization Key</div>
-                  <div className={styles.authKey}>AUTH-8X9Y-2026-XQ</div>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '1rem' }}>Payment Method</div>
+                  <select 
+                    value={paymentMethod} 
+                    onChange={(e) => setPaymentMethod(e.target.value)} 
+                    style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', background: 'var(--bg-dark)', color: 'white', border: '1px solid var(--border-light)', marginTop: '0.25rem' }}
+                  >
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="NPCI (UPI)">NPCI (UPI)</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Cash">Cash</option>
+                  </select>
                 </div>
 
-                <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>Authorize Payment</button>
+                <button 
+                  className="btn btn-primary" 
+                  style={{ width: '100%', marginTop: '1rem' }}
+                  onClick={handleAuthorizePayment}
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? 'Processing...' : 'Authorize Payment'}
+                </button>
               </div>
             </div>
           </div>

@@ -54,6 +54,8 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+  const [paymentMethod, setPaymentMethod] = useState("Credit Card");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -81,6 +83,21 @@ export default function CheckoutPage() {
   const subtotal = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
   const fees = selectedSeats.length * 40;
   const total = subtotal + fees;
+
+  const handleCheckout = async () => {
+    setIsProcessing(true);
+    try {
+      await fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: total, method: paymentMethod, purpose: 'Booking' })
+      });
+      router.push('/ticket');
+    } catch (e) {
+      console.error(e);
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className={styles.checkoutContainer}>
@@ -171,12 +188,26 @@ export default function CheckoutPage() {
             <span style={{ color: 'var(--accent-amber)' }}>₹{total.toFixed(2)}</span>
           </div>
 
+          <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Payment Method</label>
+            <select 
+              value={paymentMethod} 
+              onChange={(e) => setPaymentMethod(e.target.value)} 
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', background: 'var(--bg-dark)', color: 'white', border: '1px solid var(--border-light)' }}
+            >
+              <option value="Credit Card">Credit Card</option>
+              <option value="NPCI (UPI)">NPCI (UPI)</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Cash">Cash</option>
+            </select>
+          </div>
+
           <button 
             className={`btn btn-primary ${styles.checkoutBtn}`} 
-            disabled={selectedSeats.length === 0}
-            onClick={() => router.push('/ticket')}
+            disabled={selectedSeats.length === 0 || isProcessing}
+            onClick={handleCheckout}
           >
-            Confirm & Pay
+            {isProcessing ? 'Processing...' : 'Confirm & Pay'}
           </button>
           
           <Link href="/" className="btn btn-secondary" style={{ width: '100%', marginTop: '0.5rem' }}>
