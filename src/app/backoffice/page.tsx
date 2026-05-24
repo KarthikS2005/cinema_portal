@@ -1,12 +1,22 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
 
 export default function BackofficeDashboard() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [rooms, setRooms] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/rooms')
+      .then(res => res.json())
+      .then(data => {
+        if (data && Array.isArray(data)) setRooms(data);
+      })
+      .catch(console.error);
+  }, []);
 
   // Mock revenue data for the bar graph
   const revenueData = [45, 60, 35, 80, 90, 110, 100, 120, 85, 75, 130, 150];
@@ -94,7 +104,7 @@ export default function BackofficeDashboard() {
             <div className={styles.widgetHeader}>
               <h3 className={styles.widgetTitle}>Concessions</h3>
             </div>
-            <div className={styles.widgetValue}>$42.5k</div>
+            <div className={styles.widgetValue}>₹42.5k</div>
             <div className={`${styles.trend} ${styles.trendUp}`}>+12% vs yesterday</div>
           </div>
 
@@ -105,36 +115,76 @@ export default function BackofficeDashboard() {
             <div className={styles.widgetValue} style={{ color: 'var(--accent-cyan)' }}>99.9%</div>
             <div className={styles.trend} style={{ color: 'var(--text-secondary)' }}>All branches operational</div>
           </div>
+
+          {/* Rooms Widget */}
+          <div className={`${styles.widget} animate-slide-up`} style={{ animationDelay: '0.5s', gridColumn: '1 / -1' }}>
+            <div className={styles.widgetHeader}>
+              <h3 className={styles.widgetTitle}>Room & Task Management</h3>
+              <button className="btn btn-secondary" style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem' }} onClick={() => setEditorOpen(true)}>Manage Rooms</button>
+            </div>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+              {rooms.length === 0 ? (
+                <div style={{ color: 'var(--text-secondary)' }}>No rooms registered.</div>
+              ) : (
+                rooms.map(room => (
+                  <div key={room.id} style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-light)', minWidth: '200px' }}>
+                    <div style={{ fontWeight: 'bold' }}>{room.name}</div>
+                    <div style={{ fontSize: '0.85rem', color: room.status === 'Available' ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>{room.status}</div>
+                    <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--text-secondary)' }}>Next Cleaning: {room.cleaningSchedule || 'Not set'}</div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </main>
 
       {/* Slide-out Editor Sheet */}
       <div className={`${styles.editorSheet} ${editorOpen ? styles.open : ''}`}>
         <div className={styles.sheetHeader}>
-          <h2>Edit Branch Details</h2>
+          <h2>Manage Resources</h2>
           <button className={styles.closeBtn} onClick={() => setEditorOpen(false)}>×</button>
         </div>
         <div className={styles.sheetContent}>
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Branch Name</label>
-            <input type="text" className={styles.formInput} defaultValue="Metropolis Downtown Multiplex" />
+            <label className={styles.formLabel}>Add New Room Name</label>
+            <input type="text" className={styles.formInput} placeholder="e.g. Auditorium 4" id="newRoomName" />
           </div>
           <div className={styles.formGroup}>
             <label className={styles.formLabel}>Status</label>
-            <select className={styles.formInput}>
-              <option>Operational</option>
-              <option>Maintenance</option>
-              <option>Closed</option>
+            <select className={styles.formInput} id="newRoomStatus">
+              <option value="Available">Available</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="Maintenance">Maintenance</option>
             </select>
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Manager Override PIN</label>
-            <input type="password" className={styles.formInput} defaultValue="********" />
           </div>
         </div>
         <div style={{ display: 'flex', gap: '1rem', marginTop: 'auto' }}>
           <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setEditorOpen(false)}>Cancel</button>
-          <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => setEditorOpen(false)}>Save Changes</button>
+          <button className="btn btn-primary" style={{ flex: 1 }} onClick={async () => {
+            const name = (document.getElementById('newRoomName') as HTMLInputElement).value;
+            const status = (document.getElementById('newRoomStatus') as HTMLSelectElement).value;
+            if (!name) return;
+            
+            await fetch('/api/rooms', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, status, cleaningSchedule: 'Today, 10:00 PM' })
+            });
+            window.location.reload();
+          }}>Add Room</button>
+        </div>
+        
+        <hr style={{ borderColor: 'var(--border-light)', margin: '2rem 0' }} />
+        
+        <div className={styles.sheetContent}>
+          <h3>Export Data</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+            Download a full CSV export of all database records.
+          </p>
+          <a href="/api/export" className="btn btn-secondary" style={{ width: '100%', textAlign: 'center', display: 'block' }}>
+            Download CSV Export
+          </a>
         </div>
       </div>
     </div>
