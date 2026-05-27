@@ -18,6 +18,7 @@ export default function SettingsPage() {
         
         if (data.success) {
           setDbStatus(data);
+          setError(null);
         } else {
           setError(data.message || data.error);
         }
@@ -29,6 +30,8 @@ export default function SettingsPage() {
     }
 
     fetchDb();
+    const interval = setInterval(fetchDb, 1500);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {

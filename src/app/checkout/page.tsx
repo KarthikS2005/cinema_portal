@@ -122,16 +122,38 @@ function CheckoutPage() {
   const handleCheckout = async () => {
     setIsProcessing(true);
     try {
-      // Simulate payment processing delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Optionally we could save to DB here via API
-      
+      const response = await fetch('/api/tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          movieId: movieId || '1',
+          movieName: movieDetails?.title || 'DUNE: PART TWO',
+          selectedSeats: selectedSeats.map(seat => ({
+            id: seat.id,
+            class: seat.class,
+            price: seat.price
+          })),
+          customerName: customerName || 'Guest',
+          whatsapp: whatsapp || '',
+          ticketType: ticketType || 'online',
+          paymentMethod: paymentMethod,
+          totalAmount: total
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit booking');
+      }
+
       setIsProcessing(false);
       setShowSuccessModal(true);
     } catch (e) {
       console.error(e);
       setIsProcessing(false);
+      alert('Error during checkout: ' + (e instanceof Error ? e.message : 'Unknown error'));
     }
   };
 
