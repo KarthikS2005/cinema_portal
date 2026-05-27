@@ -86,10 +86,20 @@ export default function SettingsPage() {
             <>
               <div className={`${styles.output} ${styles.success}`}>
                 Successfully connected to SQLite.
-                {"\n"}Found {dbStatus.totalCount} records in collection 'Ticket'.
+                {"\n"}Found {dbStatus.totalCount} total records across tables.
               </div>
               
-              <div className={styles.command}>$ sqlite3 dev.db "SELECT * FROM Ticket LIMIT 200;"</div>
+              <div className={styles.command}>$ sqlite3 dev.db "SELECT * FROM Payment ORDER BY createdAt DESC LIMIT 5;"</div>
+              <div className={styles.output}>
+                {JSON.stringify(dbStatus.payments, null, 2)}
+              </div>
+
+              <div className={styles.command}>$ sqlite3 dev.db "SELECT * FROM Employee LIMIT 5;"</div>
+              <div className={styles.output}>
+                {JSON.stringify(dbStatus.employees, null, 2)}
+              </div>
+
+              <div className={styles.command}>$ sqlite3 dev.db "SELECT * FROM Ticket LIMIT 5;"</div>
               <div className={styles.output}>
                 {JSON.stringify(dbStatus.tickets, null, 2)}
               </div>

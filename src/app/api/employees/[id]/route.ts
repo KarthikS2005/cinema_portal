@@ -15,6 +15,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         location: data.location,
         wage: data.wage ? parseFloat(data.wage) : undefined,
         type: data.type,
+        shift: data.shift,
+        address: data.address,
       },
     });
     return NextResponse.json(employee);

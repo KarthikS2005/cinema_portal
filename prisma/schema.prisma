@@ -8,15 +8,18 @@ datasource db {
 }
 
 model Ticket {
-  id        String   @id @default(cuid())
-  movieId   String
-  movieName String
-  seatId    String
-  seatClass String
-  price     Float
-  status    String   @default("booked") // "booked", "scanned", "cancelled"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  movieId      String
+  movieName    String
+  seatId       String
+  seatClass    String
+  price        Float
+  status       String   @default("booked") // "booked", "scanned", "cancelled"
+  customerName String?
+  whatsapp     String?
+  ticketType   String?  // "online", "offline"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model User {
@@ -35,6 +38,9 @@ model Employee {
   location  String
   wage      Float
   type      String   // "hourly", "monthly"
+  shift     String   @default("Morning") // "Morning", "Afternoon", "Night"
+  address   String?
+  balance   Float    @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tasks     Task[]

@@ -22,6 +22,8 @@ export async function POST(req: Request) {
         location: data.location,
         wage: parseFloat(data.wage),
         type: data.type,
+        shift: data.shift || 'Morning',
+        address: data.address || '',
       },
     });
     return NextResponse.json(employee, { status: 201 });

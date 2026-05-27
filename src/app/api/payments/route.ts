@@ -14,6 +14,14 @@ export async function POST(req: Request) {
         referenceId: data.referenceId,
       },
     });
+
+    if (data.purpose === 'Salary' && data.referenceId) {
+      await prisma.employee.update({
+        where: { id: data.referenceId },
+        data: { balance: { decrement: parseFloat(data.amount) } }
+      });
+    }
+
     return NextResponse.json(payment, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to process payment' }, { status: 500 });

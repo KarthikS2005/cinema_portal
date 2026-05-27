@@ -7,16 +7,26 @@ export async function GET() {
   try {
     const tickets = await prisma.ticket.findMany({
       orderBy: { createdAt: 'desc' },
-      take: 200, // Explicitly take up to 200 for the demo
+      take: 50,
+    });
+    const payments = await prisma.payment.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+    const employees = await prisma.employee.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 50,
     });
 
-    const totalCount = await prisma.ticket.count();
+    const totalCount = await prisma.ticket.count() + await prisma.payment.count() + await prisma.employee.count();
 
     return NextResponse.json({
       success: true,
       provider: 'SQLite',
       totalCount,
-      tickets
+      tickets,
+      payments,
+      employees
     });
   } catch (error: any) {
     console.error("Database connection error:", error);

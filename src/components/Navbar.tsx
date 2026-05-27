@@ -12,7 +12,6 @@ export default function Navbar() {
     { name: 'Customer Portal', href: '/' },
     { name: 'Admin Backoffice', href: '/backoffice' },
     { name: 'HR Dashboard', href: '/hr' },
-    { name: 'Staff Scanner', href: '/scanner' },
     { name: 'DBMS Console', href: '/settings' },
   ];
 

@@ -8,8 +8,6 @@ export default withAuth({
 
 export const config = {
   matcher: [
-    "/hr/:path*",
-    "/backoffice/:path*",
-    "/settings/:path*"
+    "/((?!api|_next/static|_next/image|favicon.ico).*)"
   ],
 };

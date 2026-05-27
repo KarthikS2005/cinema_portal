@@ -4,22 +4,24 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
 
-const MOCK_MOVIES = [
-  { id: 1, title: 'DUNE: PART TWO', rating: '98%', format: 'IMAX 70MM', genre: 'Sci-Fi / Adventure', region: 'Hollywood', summary: 'Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.', img: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop' },
-  { id: 2, title: 'OPPENHEIMER', rating: '93%', format: 'DOLBY CINEMA', genre: 'Historical Drama', region: 'Hollywood', summary: 'The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.', img: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=800&auto=format&fit=crop' },
-  { id: 3, title: 'INTERSTELLAR', rating: '96%', format: 'IMAX 3D', genre: 'Sci-Fi / Drama', region: 'Hollywood', summary: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.', img: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=800&auto=format&fit=crop' },
-  { id: 4, title: 'BLADE RUNNER 2049', rating: '89%', format: '4DX', genre: 'Sci-Fi / Action', region: 'Hollywood', summary: 'Young Blade Runner K\'s discovery of a long-buried secret leads him to track down former Blade Runner Rick Deckard.', img: 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=800&auto=format&fit=crop' },
-  { id: 5, title: 'THE BATMAN', rating: '85%', format: 'DOLBY CINEMA', genre: 'Action / Crime', region: 'Hollywood', summary: 'When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city\'s hidden corruption.', img: 'https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?q=80&w=800&auto=format&fit=crop' },
-  { id: 6, title: 'PATHAAN', rating: '82%', format: 'IMAX', genre: 'Action', region: 'Bollywood', summary: 'An Indian spy takes on the leader of a group of mercenaries who have nefarious plans to target his homeland.', img: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop' },
-  { id: 7, title: 'RRR', rating: '95%', format: '4DX', genre: 'Action / Drama', region: 'South Indian', summary: 'A fictitious story about two legendary revolutionaries and their journey away from home before they started fighting for their country in 1920s.', img: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=800&auto=format&fit=crop' },
-  { id: 8, title: 'YOUR NAME', rating: '98%', format: 'Standard', genre: 'Anime / Romance', region: 'Anime', summary: 'Two teenagers share a profound, magical connection upon discovering they are swapping bodies.', img: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=800&auto=format&fit=crop' }
-];
+
 
 export default function CustomerPortal() {
   const [location, setLocation] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
+  const [movies, setMovies] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/movies')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setMovies(data);
+      })
+      .catch(console.error);
+  }, []);
 
   useEffect(() => {
     // Simulate geolocation detection
@@ -28,7 +30,7 @@ export default function CustomerPortal() {
     }, 1500);
   }, []);
 
-  const filteredMovies = MOCK_MOVIES.filter(movie => {
+  const filteredMovies = movies.filter(movie => {
     const matchesSearch = movie.title.toLowerCase().includes(searchQuery.toLowerCase()) || movie.genre.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRegion = selectedRegion ? movie.region === selectedRegion : true;
     const matchesGenre = selectedGenre ? movie.genre.toLowerCase().includes(selectedGenre.toLowerCase()) : true;
@@ -65,13 +67,35 @@ export default function CustomerPortal() {
 
       {/* Search Interface */}
       <div className={`${styles.searchInterface} animate-slide-up`} style={{ animationDelay: '0.2s', position: 'relative', zIndex: 10 }}>
-        <input 
-          type="text" 
-          placeholder="Search movies..." 
-          className={styles.searchInput} 
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        <div style={{ position: 'relative', flex: 1, minWidth: '300px' }}>
+          <input 
+            type="text" 
+            placeholder="Search movies..." 
+            className={styles.searchInput} 
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowSuggestions(true);
+            }}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            onFocus={() => setShowSuggestions(true)}
+            style={{ width: '100%' }}
+          />
+          {showSuggestions && searchQuery && (
+            <div style={{ position: 'absolute', top: '100%', left: 0, width: '100%', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '8px', marginTop: '0.5rem', maxHeight: '300px', overflowY: 'auto', zIndex: 100, boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+              {filteredMovies.length > 0 ? (
+                filteredMovies.map(m => (
+                  <div key={m.id} onClick={() => setSearchQuery(m.title)} style={{ padding: '0.75rem 1rem', cursor: 'pointer', borderBottom: '1px solid var(--border-light)' }}>
+                    <div style={{ fontWeight: 600 }}>{m.title}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{m.genre} • {m.format}</div>
+                  </div>
+                ))
+              ) : (
+                <div style={{ padding: '0.75rem 1rem', color: 'var(--text-secondary)' }}>No results found</div>
+              )}
+            </div>
+          )}
+        </div>
         <select className={styles.selectInput} value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
           <option value="">Any Region</option>
           <option value="Bollywood">Bollywood</option>

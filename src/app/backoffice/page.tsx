@@ -128,9 +128,32 @@ export default function BackofficeDashboard() {
               ) : (
                 rooms.map(room => (
                   <div key={room.id} style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-light)', minWidth: '200px' }}>
-                    <div style={{ fontWeight: 'bold' }}>{room.name}</div>
-                    <div style={{ fontSize: '0.85rem', color: room.status === 'Available' ? 'var(--accent-emerald)' : 'var(--accent-amber)' }}>{room.status}</div>
-                    <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--text-secondary)' }}>Next Cleaning: {room.cleaningSchedule || 'Not set'}</div>
+                    <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>{room.name}</div>
+                    <select 
+                      value={room.status} 
+                      onChange={async (e) => {
+                        const newStatus = e.target.value;
+                        await fetch(`/api/rooms/${room.id}`, {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ status: newStatus })
+                        });
+                        setRooms(rooms.map(r => r.id === room.id ? { ...r, status: newStatus } : r));
+                      }}
+                      style={{ 
+                        width: '100%', 
+                        padding: '0.25rem', 
+                        borderRadius: '4px', 
+                        background: 'var(--bg-dark)', 
+                        color: room.status === 'Available' ? 'var(--accent-emerald)' : 'var(--accent-amber)', 
+                        border: '1px solid var(--border-light)' 
+                      }}
+                    >
+                      <option value="Available" style={{ color: 'white' }}>Available</option>
+                      <option value="Cleaning" style={{ color: 'white' }}>Cleaning</option>
+                      <option value="Maintenance" style={{ color: 'white' }}>Maintenance</option>
+                    </select>
+                    <div style={{ fontSize: '0.8rem', marginTop: '0.75rem', color: 'var(--text-secondary)' }}>Next Cleaning: {room.cleaningSchedule || 'Not set'}</div>
                   </div>
                 ))
               )}
